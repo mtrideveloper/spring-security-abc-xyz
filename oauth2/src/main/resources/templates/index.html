@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>OAuth2 Demo</title>
+</head>
+
+<body>
+    <h1>Welcome to the Home Page</h1>
+
+    <!-- Hiển thị thông tin nếu đã đăng nhập -->
+    <div sec:authorize="isAuthenticated()">
+        <p>Hello, <strong sec:authentication="name">User</strong>!</p>
+        <a href="/profile">View Profile</a> |
+        <a href="/logout">Logout</a>
+    </div>
+
+    <!-- Hiển thị link đăng nhập nếu chưa đăng nhập -->
+    <div sec:authorize="!isAuthenticated()">
+        <p>You are not logged in.</p>
+        <a href="/oauth2/authorization/google">Login with Google</a>
+    </div>
+</body>
+
+</html>
