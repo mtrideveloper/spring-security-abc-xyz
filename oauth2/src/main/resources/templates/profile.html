@@ -1,25 +1,22 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" 
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+    layout:decorate="~{layout/main}">
 
 <head>
     <title>Profile</title>
 </head>
 
 <body>
-    <h1>Welcome, <span th:text="${name}">User</span>!</h1>
-    <p>Email: <span th:text="${email}"></span></p>
-    <img th:src="${picture}" alt="Avatar" width="100" height="100" style="border-radius: 50%;"/>
-    <br>
-    <!-- Form logout với POST method -->
-    <form th:action="@{/logout}" method="post" style="display: inline;">
-        <input type="submit" value="Logout" />
-    </form>
-    <p><a href="/">Back to Home</a></p>
+
+    <div layout:fragment="content">
+        <div class="container">
+            <h1 class="text-primary">Xin chào, <span th:text="${name}">Bạn</span></h1>
+            <img th:src="${picture}" class="img-thumbnail" style="width:150; height: 150;">
+        </div>
     </div>
-    <div th:unless="${name}">
-        <h2>You are not logged in.</h2>
-        <a href="/oauth2/authorization/google">Login with Google</a>
-    </div>
+
 </body>
 
 </html>
