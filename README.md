@@ -1,1 +1,1 @@
-`bra_1: Oauth2 solution.`
+`bra_2 is empty.`
