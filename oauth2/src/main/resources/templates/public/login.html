@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
+
+<head>
+    <title>Profile</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-8">
+                <form id="userForm">
+                    <div class="border border-3 p-4 rounded-top mb-4">
+                        <h4 class="mb-4 p-0">
+                            <strong>Login</strong>
+                            <hr>
+                        </h4>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Enter your email</label>
+                            <input type="email" class="form-control" id="email" name="email" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Enter your password</label>
+                            <input type="password" class="form-control" id="password" name="password" required />
+                        </div>
+                        <div class="d-grid col-4 pt-3 mx-auto">
+                            <button class="btn btn-dark" type="submit">Login</button>
+                        </div>
+                        <div class="text-center d-grid col-4 pt-3 mx-auto">
+                            <a th:href="@{/oauth2/authorization/google}">Login with google</a>
+                        </div>                            
+                        <h3 class="text-center pt-3" id="message-error"></h3>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
