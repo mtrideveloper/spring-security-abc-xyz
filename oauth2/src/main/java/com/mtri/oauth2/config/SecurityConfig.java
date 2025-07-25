@@ -14,13 +14,20 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/", "/home", "/public/**", "/css/**", "/js/**", "/images/**").permitAll() // Cho phép truy cập không cần đăng nhập
+                .requestMatchers("/", "/index", "/public/**", "/css/**", "/js/**", "/images/**").permitAll() // Cho phép truy cập không cần đăng nhập
                 .requestMatchers("/profile").authenticated() // Yêu cầu đăng nhập cho trang profile
                 .anyRequest().authenticated() // Tất cả request khác cần đăng nhập
             )
+            // ✅ Login form hệ thống
+            .formLogin(form -> form
+                .loginPage("/login")
+                .defaultSuccessUrl("/profile", true)
+                .permitAll()
+            )
+            // ✅ Login bằng Google OAuth2
             .oauth2Login(oauth2 -> oauth2
-                .loginPage("/") // Trang chủ sẽ có link đăng nhập
-                .defaultSuccessUrl("/profile", true) // Sau khi đăng nhập thành công, chuyển đến profile
+                .loginPage("/login") // dùng chung trang login, trang này chứ link login gg
+                .defaultSuccessUrl("/profile", true)
             )
             // Spring Boot (và Tomcat embedded) không lưu session vào đĩa giữa các lần chạy
             // JSESSIONID của client (trình duyệt) vẫn còn, nhưng Server không còn biết JSESSIONID đó là ai (vì session bị xóa trong RAM)

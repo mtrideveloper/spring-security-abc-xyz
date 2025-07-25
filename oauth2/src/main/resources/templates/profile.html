@@ -9,14 +9,14 @@
 </head>
 
 <body>
-
     <div layout:fragment="content">
-        <div class="container">
-            <h1 class="text-primary">Xin chào, <span th:text="${name}">Bạn</span></h1>
-            <img th:src="${picture}" class="img-thumbnail" style="width:150; height: 150;">
+        <h1 class="text-primary">Xin chào, <span th:text="${name}">Bạn</span></h1>
+        <!-- <img th:src="${picture}" class="img-thumbnail" style="width:150; height: 150;"> -->
+        <!--::logout-button: chọn fragment có th:fragment="logout-button" trong fragments/logout.html-->
+        <div  sec:authorize="isAuthenticated()">
+            <div th:replace="fragments/logout :: logout-button"></div>
         </div>
     </div>
-
 </body>
 
 </html>
