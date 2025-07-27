@@ -1,8 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" 
-    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
-    layout:decorate="~{layout/main}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
 
 <head>
     <title>Profile</title>
@@ -11,10 +9,17 @@
 <body>
     <div layout:fragment="content">
         <h1 class="text-primary">Xin chào, <span th:text="${name}">Bạn</span></h1>
+        <p class="text-primary">Email: <span th:text="${email}"></span></p>
+        <div th:if="${picture != null}">
+            <img class="py-3" th:src="${picture}" alt="Profile Picture" style="max-height: 140px; width: auto;">
+        </div>
+        <div th:if="${picture == null}">
+            <p>No profile picture available.</p>
+        </div>
         <!-- <img th:src="${picture}" class="img-thumbnail" style="width:150; height: 150;"> -->
         <!--::logout-button: chọn fragment có th:fragment="logout-button" trong fragments/logout.html-->
-        <div  sec:authorize="isAuthenticated()">
-            <div th:replace="fragments/logout :: logout-button"></div>
+        <div sec:authorize="isAuthenticated()">
+            <div th:replace="~{fragments/logout :: logout-button}"></div>
         </div>
     </div>
 </body>

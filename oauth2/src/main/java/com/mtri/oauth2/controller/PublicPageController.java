@@ -8,6 +8,6 @@ public class PublicPageController {
 
     @GetMapping("/")
     public String home() {
-        return "public/index";
+        return "index";
     }
 }

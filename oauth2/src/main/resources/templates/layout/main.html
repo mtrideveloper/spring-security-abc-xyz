@@ -55,7 +55,10 @@
                         </div>
                         <div sec:authorize="isAuthenticated()">
                             <a class="h-100" th:href="@{profile}">
-                                <img th:src="${picture}" class="img-thumbnail rounded-circle" style="max-height: 40px; width: auto;">
+                                <div th:if="${picture != null}">
+                                    <img th:src="${picture}" class="img-thumbnail rounded-circle" style="max-height: 40px; width: auto;">
+                                </div>
+                                <div th:if="${picture == null}">Dell lay duoc pic</div>
                             </a>
                         </div>
                         <!-- <a class="btn btn-info" tabindex="-1" role="button">
@@ -69,7 +72,7 @@
 
     <main>
         <!-- Nội dung động của từng trang -->
-        <div layout:fragment="content" class="container"></div>
+        <div layout:fragment="content" class="container py-3"></div>
     </main>
 
     <footer>

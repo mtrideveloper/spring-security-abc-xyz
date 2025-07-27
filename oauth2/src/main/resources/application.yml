@@ -10,3 +10,14 @@ spring:
               - openid
               - email
               - profile
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL}
+    password: ${PASSWORD} #mật khẩu ứng dụng (apppasswords), với tên ứng dụng là: spring-security-abc-xyz
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true

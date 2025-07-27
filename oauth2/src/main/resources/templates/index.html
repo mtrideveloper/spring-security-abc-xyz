@@ -13,10 +13,10 @@
         <div sec:authorize="isAuthenticated()">
             <p>Hello, 
                 <cite>user authentication code:</cite>
-                <strong sec:authentication="name">User</strong>!
+                <strong sec:authentication="name">User</strong>
             </p>
             <!--::logout-button: chọn fragment có th:fragment="logout-button" trong fragments/logout.html-->
-            <div th:replace="fragments/logout :: logout-button"></div>
+            <div th:replace="~{fragments/logout :: logout-button}"></div>
         </div>
 
         <!-- Hiển thị link đăng nhập nếu chưa đăng nhập -->
