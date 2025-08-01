@@ -1,1 +1,3 @@
-`bra_2 is empty.`
+`tasks uncompleted:`
++ Fix `authentication bypass` vulnerability.
++ Set token invalid notification visible/invisible.
