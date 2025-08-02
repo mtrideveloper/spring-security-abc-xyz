@@ -55,7 +55,7 @@
                         </div>
                         <div sec:authorize="isAuthenticated()">
                             <a class="h-100" th:href="@{/profile}">
-                                <img th:if="${picture != null}" th:src="${picture}" class="img-thumbnail rounded-circle"
+                                <img th:src="@{/proxy-image(url=${picture})}" class="img-thumbnail rounded-circle"
                                     style="max-height: 40px; width: auto; aspect-ratio: 1;">
                                 <img th:if="${picture == null}" th:src="@{/images/noise.jpg}" class="img-thumbnail rounded-circle"
                                     style="max-height: 40px; width: auto; aspect-ratio: 1;">
