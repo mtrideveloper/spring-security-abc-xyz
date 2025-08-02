@@ -1,4 +1,4 @@
-package com.mtri.oauth2.util;
+package com.mtri.auths.util;
 
 import org.springframework.security.authentication.ott.OneTimeTokenAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;

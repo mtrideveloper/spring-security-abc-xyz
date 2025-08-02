@@ -1,4 +1,4 @@
-package com.mtri.oauth2.controller;
+package com.mtri.auths.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

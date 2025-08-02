@@ -1,4 +1,4 @@
-package com.mtri.oauth2.model;
+package com.mtri.auths.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

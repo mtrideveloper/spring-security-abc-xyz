@@ -1,4 +1,4 @@
-package com.mtri.oauth2.util;
+package com.mtri.auths.util;
 
 public class PathConstants {
     // OAuth2 paths

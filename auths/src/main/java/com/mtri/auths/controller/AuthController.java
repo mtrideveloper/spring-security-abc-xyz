@@ -1,4 +1,4 @@
-package com.mtri.oauth2.controller;
+package com.mtri.auths.controller;
 
 import java.security.Principal;
 
@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.mtri.oauth2.util.PathConstants;
+import com.mtri.auths.util.PathConstants;
 
 @Controller
 public class AuthController {
@@ -28,7 +28,7 @@ public class AuthController {
         }
 
         if (principal != null) {
-            System.out.println("AUTHOR OAUTH2: " +principal.getName());
+            System.out.println("AUTHOR OAUTH2: " + principal.getName());
             return "redirect:/profile";
         }
 
@@ -50,20 +50,29 @@ public class AuthController {
     // OTT Login Page (GET: Hiển thị form với token)
     @GetMapping(PathConstants.OTT_LOGIN_PATH)
     public String ottLogin(
-            @RequestParam(value = "error", required = false) String error,
+            @RequestParam(value = "error", required = false) String error, // SecurityConfig.failureUrl(PathConstants.LOGIN_PATH
+                                                                           // + "?error")
             @RequestParam(value = "token", required = false) String token,
             Model model, Principal principal) {
-        if (error != null) {
-            model.addAttribute("error", "Đăng nhập thất bại. Vui lòng kiểm tra email hoặc thử lại.");
+        //Có thể throw NullPointerException
+        //if (error.equals("invalid_token"))
+        // ngược lại thì kiểm tra 1 chuỗi luôn != null thì hợp lệ
+        if ("invalid_token".equals(error)) {
+            model.addAttribute("error", "Token không hợp lệ.");
+            System.out.println("error: " + error);
+            System.out.println("error attr: " + model.getAttribute("error"));
         }
+
         if (token != null) {
             model.addAttribute("token", token);
+            System.out.println("token: " + token);
         }
+
         if (principal != null && principal instanceof UserDetails) {
             System.out.println("principal: " + principal.getName());
             return "redirect:/profile";
         }
         model.addAttribute("loginUrl", PathConstants.LOGIN_PATH);
         return "ott-login";
-    }    
+    }
 }

@@ -1,4 +1,4 @@
-package com.mtri.oauth2.model;
+package com.mtri.auths.model;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

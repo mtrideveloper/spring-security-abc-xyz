@@ -1,4 +1,4 @@
-package com.mtri.oauth2.handler;
+package com.mtri.auths.handler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,7 +13,7 @@ import org.springframework.security.web.util.UrlUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.mtri.oauth2.util.PathConstants;
+import com.mtri.auths.util.PathConstants;
 
 import java.io.IOException;
 
@@ -71,7 +71,7 @@ public class MagicLinkGenerationSuccessHandler implements OneTimeTokenGeneration
         }
         // Redirect đến trang ott-sent
 
-        System.out.println("oneTimeToken "+oneTimeToken);
+        // System.out.println("oneTimeToken "+oneTimeToken);
         this.redirectHandler.handle(request, response, oneTimeToken);
     }
 }

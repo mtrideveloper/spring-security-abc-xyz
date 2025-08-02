@@ -1,4 +1,4 @@
-package com.mtri.oauth2.config;
+package com.mtri.auths.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -6,8 +6,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.mtri.oauth2.handler.MagicLinkGenerationSuccessHandler;
-import com.mtri.oauth2.util.PathConstants;
+import com.mtri.auths.handler.MagicLinkGenerationSuccessHandler;
+import com.mtri.auths.util.PathConstants;
 
 @Configuration
 @EnableWebSecurity
@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .oneTimeTokenLogin(ott -> ott
                         .loginPage(PathConstants.OTT_LOGIN_PATH)
                         .defaultSuccessUrl(PathConstants.PROFILE_PATH, true)
-                        .failureUrl(PathConstants.OTT_LOGIN_PATH + "?error")
+                        .failureUrl(PathConstants.OTT_LOGIN_PATH + "?error=invalid_token")
                         .tokenGenerationSuccessHandler(magicLinkHandler))
                 // ✅ Login bằng Google OAuth2
                 .oauth2Login(oauth2 -> oauth2
