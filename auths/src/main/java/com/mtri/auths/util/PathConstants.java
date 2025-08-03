@@ -16,8 +16,10 @@ public class PathConstants {
     public static final String SPR_OTT_LOGIN_API = "/login/ott";
     public static final String SPR_OTT_GEN_API = "/ott/generate";
     
-    // errors 
-    public static final String TOKEN_INVALID = "error/token-invalid";
+    // recaptcha
+    public static final String RECAPTCHAV2GG = "/ott/gen-captcha";
+    // recaptcha path
+    public static final String RECAPTCHAV2GGFORM = "/redirect-ott-form";
 
     private PathConstants(){}
 }

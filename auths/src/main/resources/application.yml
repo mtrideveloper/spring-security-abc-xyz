@@ -21,3 +21,5 @@ spring:
           auth: true
           starttls:
             enable: true
+  recaptcha:
+    secret: ${RECAPTCHA_SECRET}

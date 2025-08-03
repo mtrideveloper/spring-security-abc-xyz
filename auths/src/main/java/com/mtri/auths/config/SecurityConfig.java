@@ -26,6 +26,8 @@ public class SecurityConfig {
                                 PathConstants.LOGIN_PATH,
                                 PathConstants.OTT_LOGIN_PATH,
                                 PathConstants.OTT_SENT_PATH,
+                                PathConstants.RECAPTCHAV2GG,
+                                PathConstants.RECAPTCHAV2GGFORM,
                                 "/css/**", "/js/**", "/images/**")
                         .permitAll() // Cho phép truy cập không cần đăng nhập
                         .requestMatchers("/profile").authenticated() // Yêu cầu đăng nhập cho trang profile
