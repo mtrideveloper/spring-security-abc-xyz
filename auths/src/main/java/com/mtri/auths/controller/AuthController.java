@@ -49,39 +49,49 @@ public class AuthController {
         return "ott-sent";
     }
 
-    // OTT Login Page (GET: Hiển thị form với token)
-    @GetMapping(PathConstants.OTT_LOGIN_PATH)
-    public String ottLogin(
-            @RequestParam(value = "error", required = false) String error,
-            @RequestParam(value = "token", required = false) String token,
-            Model model,
-            Principal principal,
-            HttpSession session) {
-
-        // Kiểm tra nếu có lỗi và lỗi là invalid_token
-        if ("invalid_token".equals(error)) {
-            Boolean allowError = (Boolean) session.getAttribute("ALLOW_INVALID_TOKEN_ERROR");
-
-            if (Boolean.TRUE.equals(allowError)) {
-                model.addAttribute("error", "Token không hợp lệ.");
-                session.removeAttribute("ALLOW_INVALID_TOKEN_ERROR"); // Xóa flag sau khi dùng
-            } else {
-                // Người dùng gõ tay URL, không cho hiển thị lỗi
-                return "redirect:" + PathConstants.OTT_LOGIN_PATH;
-            }
-        }
-
-        // Nếu có token (khi người dùng nhấp link trong email), truyền vào form
-        if (token != null && !token.isBlank()) {
-            model.addAttribute("token", token);
-        }
-
-        // Nếu đã đăng nhập, chuyển về profile
+    // Trang yêu cầu magic link
+    @GetMapping(PathConstants.OTT_REQUEST_PATH)
+    public String showOttRequestPage(Model model, Principal principal) {
         if (principal instanceof UserDetails) {
             return "redirect:" + PathConstants.PROFILE_PATH;
         }
-
         model.addAttribute("loginUrl", PathConstants.LOGIN_PATH);
+        return "ott-request";
+    }
+
+    // login bằng ott token
+    @GetMapping(PathConstants.OTT_LOGIN_PATH)
+    public String loginOtt(@RequestParam(value = "token", required = false) String token,
+            @RequestParam(value = "error", required = false) String error,
+            HttpSession session, Model model, Principal principal) {
+
+        if ("invalid_token".equals(error)) {
+            Boolean allow = (Boolean) session.getAttribute("ALLOW_INVALID_TOKEN_ERROR");
+
+            if (Boolean.TRUE.equals(allow)) {
+                model.addAttribute("error", "Token không hợp lệ.");
+                session.removeAttribute("ALLOW_INVALID_TOKEN_ERROR");
+            } else {
+                return "redirect:" + PathConstants.OTT_REQUEST_PATH;
+            }
+        }
+
+        if (principal instanceof UserDetails) {
+            System.out.println("You already logged in");
+            return "redirect:" + PathConstants.PROFILE_PATH;
+        }
+
+        // CHẶN TRUY CẬP TRÁI PHÉP VÀO /ott/login?token=abcxyz
+        if (token != null) {
+            // Boolean allow = (Boolean) session.getAttribute("ALLOW_OTT_LOGIN");
+            // if (!Boolean.TRUE.equals(allow)) {
+            // System.out.println("ALLOW_OTT_LOGIN false");
+            // return "redirect:" + PathConstants.OTT_REQUEST_PATH;
+            // }
+            // session.removeAttribute("ALLOW_OTT_LOGIN");
+            model.addAttribute("token", token);
+        }
+
         return "ott-login";
     }
 }
