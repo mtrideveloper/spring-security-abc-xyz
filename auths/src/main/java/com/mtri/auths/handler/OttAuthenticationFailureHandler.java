@@ -20,10 +20,12 @@ public class OttAuthenticationFailureHandler implements AuthenticationFailureHan
             HttpServletResponse response,
             AuthenticationException exception) throws IOException, ServletException {
 
-        // Đặt session flag cho phép hiển thị lỗi token không hợp lệ
+        // B1: Đặt session flag ALLOW_INVALID_TOKEN_ERROR vào RAM server hiển thị lỗi token không hợp lệ
         request.getSession().setAttribute("ALLOW_INVALID_TOKEN_ERROR", true);
 
-        // Redirect tới trang OTT login với error
-        response.sendRedirect(PathConstants.OTT_LOGIN_PATH + "?error=invalid_token");
+        // B2: Redirect tới /ott-request?error=invalid_token
+        response.sendRedirect(PathConstants.OTT_REQUEST_PATH + "?error=invalid_token");
+
+        
     }
 }
