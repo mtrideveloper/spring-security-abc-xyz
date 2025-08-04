@@ -21,6 +21,7 @@ public class GlobalControllerAdvice {
         model.addAttribute("ottLoginUrl", PathConstants.OTT_LOGIN_PATH);
         model.addAttribute("sprOttLoginApi", PathConstants.SPR_OTT_LOGIN_API);
         model.addAttribute("sprOttGenApi", PathConstants.SPR_OTT_GEN_API);
+        model.addAttribute("recaptchaV2Gg", PathConstants.RECAPTCHAV2GG);
         
         if (principal != null) {
             String name = null;

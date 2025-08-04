@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.mtri.auths.handler.MagicLinkGenerationSuccessHandler;
+import com.mtri.auths.handler.OttAuthenticationFailureHandler;
 import com.mtri.auths.util.PathConstants;
 
 @Configuration
@@ -26,6 +27,8 @@ public class SecurityConfig {
                                 PathConstants.LOGIN_PATH,
                                 PathConstants.OTT_LOGIN_PATH,
                                 PathConstants.OTT_SENT_PATH,
+                                PathConstants.RECAPTCHAV2GG,
+                                PathConstants.RECAPTCHAV2GGFORM,
                                 "/css/**", "/js/**", "/images/**")
                         .permitAll() // Cho phép truy cập không cần đăng nhập
                         .requestMatchers("/profile").authenticated() // Yêu cầu đăng nhập cho trang profile
@@ -40,7 +43,8 @@ public class SecurityConfig {
                 .oneTimeTokenLogin(ott -> ott
                         .loginPage(PathConstants.OTT_LOGIN_PATH)
                         .defaultSuccessUrl(PathConstants.PROFILE_PATH, true)
-                        .failureUrl(PathConstants.OTT_LOGIN_PATH + "?error=invalid_token")
+                        // .failureUrl(PathConstants.OTT_LOGIN_PATH + "?error=invalid_token")
+                        .failureHandler(new OttAuthenticationFailureHandler())
                         .tokenGenerationSuccessHandler(magicLinkHandler))
                 // ✅ Login bằng Google OAuth2
                 .oauth2Login(oauth2 -> oauth2

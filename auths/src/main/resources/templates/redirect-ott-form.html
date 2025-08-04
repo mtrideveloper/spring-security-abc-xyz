@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Redirecting...</title>
+</head>
+
+<body>
+    <div sec:authorize="isAuthenticated()">
+        <h1 class="text-primary text-center">(Tạm thời) Bạn đã đăng nhập rồi!</h1>
+    </div>
+    
+    <div sec:authorize="!isAuthenticated()">
+        <form id="forwardForm" th:action="${sprOttGenApi}" method="post">
+            <input type="hidden" name="username" th:value="${username}" />
+        </form>
+    </div>
+
+    <script>
+        let forwardForm = document.getElementById("forwardForm");
+        if (forwardForm) forwardForm.submit();
+    </script>
+</body>
+
+</html>
