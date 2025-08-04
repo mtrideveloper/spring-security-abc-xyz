@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.mtri.auths.util.PathConstants;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class AuthController {
 
@@ -42,7 +44,7 @@ public class AuthController {
         model.addAttribute("message", "Magic link đã được gửi đến email của bạn. Vui lòng kiểm tra hộp thư.");
         if (principal != null) {
             System.out.println("principal: " + principal.getName());
-            return "redirect:/profile";
+            return "redirect:" + PathConstants.PROFILE_PATH;
         }
         return "ott-sent";
     }
@@ -50,28 +52,35 @@ public class AuthController {
     // OTT Login Page (GET: Hiển thị form với token)
     @GetMapping(PathConstants.OTT_LOGIN_PATH)
     public String ottLogin(
-            @RequestParam(value = "error", required = false) String error, // SecurityConfig.failureUrl(PathConstants.LOGIN_PATH
-                                                                           // + "?error")
+            @RequestParam(value = "error", required = false) String error,
             @RequestParam(value = "token", required = false) String token,
-            Model model, Principal principal) {
-        //Có thể throw NullPointerException
-        //if (error.equals("invalid_token"))
-        // ngược lại thì kiểm tra 1 chuỗi luôn != null thì hợp lệ
+            Model model,
+            Principal principal,
+            HttpSession session) {
+
+        // Kiểm tra nếu có lỗi và lỗi là invalid_token
         if ("invalid_token".equals(error)) {
-            model.addAttribute("error", "Token không hợp lệ.");
-            System.out.println("error: " + error);
-            System.out.println("error attr: " + model.getAttribute("error"));
+            Boolean allowError = (Boolean) session.getAttribute("ALLOW_INVALID_TOKEN_ERROR");
+
+            if (Boolean.TRUE.equals(allowError)) {
+                model.addAttribute("error", "Token không hợp lệ.");
+                session.removeAttribute("ALLOW_INVALID_TOKEN_ERROR"); // Xóa flag sau khi dùng
+            } else {
+                // Người dùng gõ tay URL, không cho hiển thị lỗi
+                return "redirect:" + PathConstants.OTT_LOGIN_PATH;
+            }
         }
 
-        if (token != null) {
+        // Nếu có token (khi người dùng nhấp link trong email), truyền vào form
+        if (token != null && !token.isBlank()) {
             model.addAttribute("token", token);
-            System.out.println("token: " + token);
         }
 
-        if (principal != null && principal instanceof UserDetails) {
-            System.out.println("principal: " + principal.getName());
-            return "redirect:/profile";
+        // Nếu đã đăng nhập, chuyển về profile
+        if (principal instanceof UserDetails) {
+            return "redirect:" + PathConstants.PROFILE_PATH;
         }
+
         model.addAttribute("loginUrl", PathConstants.LOGIN_PATH);
         return "ott-login";
     }
