@@ -6,6 +6,7 @@ public class PathConstants {
     // OTT paths
     public static final String OTT_LOGIN_PATH = "/ott/login";
     public static final String OTT_SENT_PATH = "/ott-sent";
+    public static final String OTT_REQUEST_PATH = "/ott-request";
     
     // Common paths
     public static final String PROFILE_PATH = "/profile";

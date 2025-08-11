@@ -2,24 +2,26 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Redirecting...</title>
+    <title  sec:authorize="!isAuthenticated()">Redirecting...</title>
 </head>
 
 <body>
+    <!-- Không có controller GET nào cho view này nên không cần hiển thị gì...
     <div sec:authorize="isAuthenticated()">
         <h1 class="text-primary text-center">(Tạm thời) Bạn đã đăng nhập rồi!</h1>
     </div>
-    
+    -->
+
     <div sec:authorize="!isAuthenticated()">
         <form id="forwardForm" th:action="${sprOttGenApi}" method="post">
             <input type="hidden" name="username" th:value="${username}" />
         </form>
-    </div>
 
-    <script>
-        let forwardForm = document.getElementById("forwardForm");
-        if (forwardForm) forwardForm.submit();
-    </script>
+        <script>
+            let forwardForm = document.getElementById("forwardForm");
+            if (forwardForm) forwardForm.submit();
+        </script>
+    </div>
 </body>
 
 </html>

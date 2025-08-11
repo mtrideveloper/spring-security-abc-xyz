@@ -49,39 +49,48 @@ public class AuthController {
         return "ott-sent";
     }
 
-    // OTT Login Page (GET: Hiển thị form với token)
-    @GetMapping(PathConstants.OTT_LOGIN_PATH)
-    public String ottLogin(
-            @RequestParam(value = "error", required = false) String error,
-            @RequestParam(value = "token", required = false) String token,
-            Model model,
-            Principal principal,
-            HttpSession session) {
-
-        // Kiểm tra nếu có lỗi và lỗi là invalid_token
+    // Trang yêu cầu magic link
+    @GetMapping(PathConstants.OTT_REQUEST_PATH)
+    public String showOttRequestPage(
+        Model model, Principal principal,
+        @RequestParam(value = "error", required = false) String error,
+        HttpSession session) {
+        // B3: kiểm tra param error có phải invalid_token
         if ("invalid_token".equals(error)) {
-            Boolean allowError = (Boolean) session.getAttribute("ALLOW_INVALID_TOKEN_ERROR");
-
-            if (Boolean.TRUE.equals(allowError)) {
+            // B4: lấy session flag ALLOW_INVALID_TOKEN_ERROR đã lưu tại B1
+            Boolean allow = (Boolean) session.getAttribute("ALLOW_INVALID_TOKEN_ERROR");
+            if (Boolean.TRUE.equals(allow)) // tránh null
+            {
+                // B5: lưu vào attr để dùng trong thymeleaf
                 model.addAttribute("error", "Token không hợp lệ.");
-                session.removeAttribute("ALLOW_INVALID_TOKEN_ERROR"); // Xóa flag sau khi dùng
-            } else {
-                // Người dùng gõ tay URL, không cho hiển thị lỗi
-                return "redirect:" + PathConstants.OTT_LOGIN_PATH;
             }
+            // B6: xóa flag để lần refresh sau không hiển thị lại thông báo lỗi
+            session.removeAttribute("ALLOW_INVALID_TOKEN_ERROR");
         }
+        System.out.println("Error: "+model.getAttribute("error"));
 
-        // Nếu có token (khi người dùng nhấp link trong email), truyền vào form
-        if (token != null && !token.isBlank()) {
-            model.addAttribute("token", token);
-        }
-
-        // Nếu đã đăng nhập, chuyển về profile
         if (principal instanceof UserDetails) {
             return "redirect:" + PathConstants.PROFILE_PATH;
         }
-
         model.addAttribute("loginUrl", PathConstants.LOGIN_PATH);
+        return "ott-request";
+    }
+
+    // login bằng ott token
+    @GetMapping(PathConstants.OTT_LOGIN_PATH)
+    public String loginOtt(
+        @RequestParam(value = "token", required = false) String token,
+        Model model, Principal principal) {
+
+        if (principal instanceof UserDetails) {
+            System.out.println("You already logged in");
+            return "redirect:" + PathConstants.PROFILE_PATH;
+        }
+
+        if (token != null) {
+            model.addAttribute("token", token);
+        }
+
         return "ott-login";
     }
 }

@@ -1,100 +1,24 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập - Magic Link</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Google reCAPTCHA -->
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <title sec:authorize="!isAuthenticated()">Đang xác nhận...</title>
 </head>
 
 <body>
-    <div layout:fragment="content">
-        <!-- Toast Error -->
-        <div th:if="${error}" class="toast-container position-fixed p-3" style="z-index: 9999;">
-            <div class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive"
-                aria-atomic="true" id="liveToast">
-                <div class="d-flex">
-                    <div class="toast-body" th:text="${error}">Token không hợp lệ</div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-            </div>
-        </div>
-
-        <div sec:authorize="isAuthenticated()">
-            <h1 class="text-primary text-center">(Tạm thời) Bạn đã đăng nhập rồi!</h1>
-        </div>
-
-        <div sec:authorize="!isAuthenticated()">
-            <div class="row justify-content-center mt-5">
-                <div class="col-md-4">
-                    <div class="border border-3 p-4 rounded-top mb-4">
-                        <h4 class="mb-4 p-0">
-                            <strong th:unless="${token}">Magic Link login</strong>
-                            <strong th:if="${token}">Enter your token</strong>
-                            <hr>
-                        </h4>
-
-                        <!-- ✅ Form khi đã có token -->
-                        <div th:if="${token}">
-                            <form th:action="${sprOttLoginApi}" method="post">
-                                <div class="mb-2">
-                                    <label for="token" class="form-label">Token</label>
-                                    <input type="text" class="form-control" id="token" name="token" th:value="${token}" required readonly>
-                                </div>
-                                <div class="d-grid col-12 pt-3 mx-auto">
-                                    <button type="submit" class="btn btn-dark">Xác nhận</button>
-                                </div>
-                            </form>
-                        </div>
-
-                        <!-- ✅ Form khi chưa có token -->
-                        <div th:unless="${token}">
-                            <!-- Gửi đến controller trung gian để kiểm tra captcha -->
-                            <form th:action="${recaptchaV2Gg}" method="post">
-                                <div class="mb-2">
-                                    <input type="email" class="form-control" id="username" name="username" required placeholder="Nhập email">
-                                </div>
-
-                                <!-- Google reCAPTCHA -->
-                                <div class="d-flex justify-content-center pt-3">
-                                    <div class="g-recaptcha" data-sitekey="6LdFEJkrAAAAAMe8YK909JQTeHR2Se3dZmysFq0p"></div>
-                                </div>
-
-                                <div class="d-grid col-12 pt-3">
-                                    <button type="submit" class="btn btn-dark">Gửi</button>
-                                </div>
-
-                                <p class="text-center d-grid col-4 pt-3 gap-2 mx-auto">
-                                    <a th:href="${loginUrl}" class="text-secondary">Quay lại</a>
-                                </p>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Script hiển thị toast nếu có -->
-    <th:block layout:fragment="scripts">
+    <div sec:authorize="!isAuthenticated()">
+        <form id="ottForm" th:action="${sprOttLoginApi}" method="post">
+            <input type="hidden" name="token" th:value="${token}" />
+        </form>
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const liveToast = document.getElementById('liveToast');
-                if (liveToast) {
-                    const toast = new bootstrap.Toast(liveToast, {
-                        autohide: true,
-                        delay: 5000
-                    });
-                    toast.show();
-                }
+            document.addEventListener("DOMContentLoaded", function () {
+                const form = document.getElementById("ottForm");
+                if (form) form.submit(); // auto submit
             });
         </script>
-    </th:block>
+    </div>
 </body>
 
 </html>

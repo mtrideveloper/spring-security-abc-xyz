@@ -29,7 +29,7 @@ public class OttCaptchaProxyController {
 
         if (!verifyCaptcha(captchaToken)) {
             model.addAttribute("error", "Captcha không hợp lệ");
-            System.out.println("captcha token invalid");
+            System.out.println("captcha token invalid: "+captchaToken);
             
             return "ott-login"; // Trả lại trang login
         }
@@ -48,6 +48,7 @@ public class OttCaptchaProxyController {
      */
     private boolean verifyCaptcha(String token) {
         final String SECRET_KEY = System.getProperty("RECAPTCHA_SECRET");
+        System.out.println("sk: "+SECRET_KEY);
         String url = "https://www.google.com/recaptcha/api/siteverify";
 
         RestTemplate restTemplate = new RestTemplate();

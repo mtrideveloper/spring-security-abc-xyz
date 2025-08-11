@@ -34,6 +34,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/", "/index", "/public/**", "/unauth/**",
                                 PathConstants.LOGIN_PATH,
+                                PathConstants.OTT_REQUEST_PATH,
                                 PathConstants.OTT_LOGIN_PATH,
                                 PathConstants.OTT_SENT_PATH,
                                 PathConstants.RECAPTCHAV2GG,

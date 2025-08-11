@@ -13,6 +13,14 @@ public class ImageProxyController {
      */
     private final RestTemplate restTemplate = new RestTemplate();
 
+    /**
+     * Nhận URL ảnh Google (qua ?url=...)
+     * Tải ảnh từ Google bằng Java code (RestTemplate)
+     * Gửi lại ảnh cho trình duyệt
+     * Trình duyệt không bị chặn (CORS, SameSite, cookie...)
+     * * @param imageUrl
+     * @return
+     */
     @GetMapping("/proxy-image")
     public ResponseEntity<byte[]> proxyImage(@RequestParam("url") String imageUrl) {
         // Chặn các domain không phải Google (tùy chọn bảo mật)
@@ -30,14 +38,14 @@ public class ImageProxyController {
             HttpHeaders headers = new HttpHeaders();
             String lowerUrl = imageUrl.toLowerCase();
             MediaType contentType;
-            if (lowerUrl.endsWith(".png")) 
+            if (lowerUrl.endsWith(".png"))
                 contentType = MediaType.IMAGE_PNG;
-             else if (lowerUrl.endsWith(".gif")) 
+            else if (lowerUrl.endsWith(".gif"))
                 contentType = MediaType.IMAGE_GIF;
-            else 
+            else
                 contentType = MediaType.IMAGE_JPEG;
             headers.setContentType(contentType);
-            
+
             return new ResponseEntity<>(response.getBody(), headers, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).build();
