@@ -1,0 +1,52 @@
+package com.mtri.auths.controller;
+
+import org.springframework.web.bind.annotation.RestController;
+
+import com.mtri.auths.dto.req.StartTripRequest;
+import com.mtri.auths.model.Trip;
+import com.mtri.auths.service.trip.TripService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@RestController
+@RequestMapping("/trip")
+public class TripController {
+    @Autowired
+    private TripService tripService;
+
+    // ====== 1. Bắt đầu trip ======
+    @PostMapping("/start")
+    public Trip startTrip(
+        @RequestBody StartTripRequest startTripRequest) {
+        return tripService.startTrackingService(startTripRequest.tripId, startTripRequest.enable);
+    }
+
+    /*
+     * body gửi về cho server phải là:
+     * {
+     * "type": "Point",
+     * "coordinates": [106.660172, 10.762622]
+     * }
+     * Để GeoJsonPoint mongodb phân tích.
+     */
+    @PostMapping("/track/{tripId}")
+    public Trip trackLocation(
+            @PathVariable String tripId,
+            @RequestBody GeoJsonPoint point) {
+        return tripService.trackLocationService(tripId, point);
+    }
+
+    // ====== 3. Dừng trip ======
+    @PostMapping("/stop/{tripId}")
+    public Trip stopTrip(
+            @PathVariable String tripId,
+            @RequestParam(defaultValue = "false") boolean useGoogleDirections) {
+        return tripService.stopTripService(tripId, useGoogleDirections);
+    }
+}

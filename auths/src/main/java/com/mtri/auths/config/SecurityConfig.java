@@ -35,12 +35,6 @@ public class SecurityConfig {
                         .requestMatchers("/profile").authenticated() // Yêu cầu đăng nhập cho trang profile
                         .anyRequest().authenticated() // Tất cả request khác cần đăng nhập
                 )
-                // ✅ Form Login form hệ thống
-                .formLogin(form -> form
-                        .loginPage(PathConstants.LOGIN_PATH)
-                        .defaultSuccessUrl(PathConstants.PROFILE_PATH, true)
-                        .failureUrl(PathConstants.LOGIN_PATH + "?error"))
-                        // .permitAll())
                 .oneTimeTokenLogin(ott -> ott
                         .loginPage(PathConstants.OTT_LOGIN_PATH)
                         .defaultSuccessUrl(PathConstants.PROFILE_PATH, true)
