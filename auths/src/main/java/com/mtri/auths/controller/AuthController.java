@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.mtri.auths.util.PathConstants;
+import com.mtri.auths.util.SecurityChecker;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -29,7 +32,7 @@ public class AuthController {
             model.addAttribute("message", "Bạn đã đăng xuất thành công.");
         }
 
-        if (principal != null) {
+        if (SecurityChecker.isValidPrincipal(principal)) {
             System.out.println("AUTHOR OAUTH2: " + principal.getName());
             return "redirect:/profile";
         }
@@ -52,24 +55,16 @@ public class AuthController {
     // Trang yêu cầu magic link
     @GetMapping(PathConstants.OTT_REQUEST_PATH)
     public String showOttRequestPage(
-        Model model, Principal principal,
-        @RequestParam(value = "error", required = false) String error,
-        HttpSession session) {
+            Model model, Principal principal,
+            @RequestParam(value = "error", required = false) String error,
+            HttpSession session) {
         // B3: kiểm tra param error có phải invalid_token
         if ("invalid_token".equals(error)) {
-            // B4: lấy session flag ALLOW_INVALID_TOKEN_ERROR đã lưu tại B1
-            Boolean allow = (Boolean) session.getAttribute("ALLOW_INVALID_TOKEN_ERROR");
-            if (Boolean.TRUE.equals(allow)) // tránh null
-            {
-                // B5: lưu vào attr để dùng trong thymeleaf
-                model.addAttribute("error", "Token không hợp lệ.");
-            }
-            // B6: xóa flag để lần refresh sau không hiển thị lại thông báo lỗi
-            session.removeAttribute("ALLOW_INVALID_TOKEN_ERROR");
+            CheckErrorWithSessionFlag(model, session);
         }
-        System.out.println("Error: "+model.getAttribute("error"));
+        System.out.println("Error: " + model.getAttribute("error"));
 
-        if (principal instanceof UserDetails) {
+        if (SecurityChecker.isValidPrincipal(principal)) {
             return "redirect:" + PathConstants.PROFILE_PATH;
         }
         model.addAttribute("loginUrl", PathConstants.LOGIN_PATH);
@@ -79,12 +74,18 @@ public class AuthController {
     // login bằng ott token
     @GetMapping(PathConstants.OTT_LOGIN_PATH)
     public String loginOtt(
-        @RequestParam(value = "token", required = false) String token,
-        Model model, Principal principal) {
+            @RequestParam(value = "token", required = false) String token,
+            Model model, Principal principal,
+            HttpSession session, HttpServletResponse response, HttpServletRequest request) {
 
         if (principal instanceof UserDetails) {
-            System.out.println("You already logged in");
             return "redirect:" + PathConstants.PROFILE_PATH;
+        }
+
+        // Kiểm tra token - nếu không có token thì redirect về trang request
+        if (token == null || token.trim().isEmpty()) {
+            session.setAttribute("ALLOW_INVALID_TOKEN_ERROR", true);
+            return "redirect:" + PathConstants.OTT_REQUEST_PATH + "?error=invalid_token";
         }
 
         if (token != null) {
@@ -92,5 +93,18 @@ public class AuthController {
         }
 
         return "ott-login";
+    }
+
+    private void CheckErrorWithSessionFlag(Model model, HttpSession session) {
+        // B4: lấy session flag ALLOW_INVALID_TOKEN_ERROR đã lưu tại B1
+        Boolean allow = (Boolean) session.getAttribute("ALLOW_INVALID_TOKEN_ERROR");
+        if (Boolean.TRUE.equals(allow)) // tránh null
+        {
+            System.out.println("ott token invalid");
+            // B5: lưu vào attr để dùng trong thymeleaf
+            model.addAttribute("error", "Token không hợp lệ.");
+        }
+        // B6: xóa flag để lần refresh sau không hiển thị lại thông báo lỗi
+        session.removeAttribute("ALLOW_INVALID_TOKEN_ERROR");
     }
 }

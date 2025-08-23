@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.mtri.auths.service.auth.UserService;
 import com.mtri.auths.service.auth.ott.CustomUserDetailsService;
+import com.mtri.auths.util.PathConstants;
 
 @Component
 public class OttAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
@@ -40,7 +41,9 @@ public class OttAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
                 new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(auth);
-        super.onAuthenticationSuccess(request, response, auth);
+        // super.onAuthenticationSuccess(request, response, auth);
+        // qua profile
+        response.sendRedirect(PathConstants.PROFILE_PATH);
     }
 }
 

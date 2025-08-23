@@ -9,27 +9,46 @@ import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 
 import com.mtri.auths.model.User;
-import com.mtri.auths.repo.UserRepository;
+import com.mtri.auths.service.auth.UserService;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-    private final UserRepository userRepository;
+    private final UserService userService; // thêm UserService
 
-    public CustomUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CustomUserDetailsService(UserService userService) {
+        this.userService = userService;
     }
 
     // Load by username = email
-    @Override // ghi đè pthuc loadUserByUsername của Spring Security
+    // @Override // ghi đè pthuc loadUserByUsername của Spring Security
+    // public UserDetails loadUserByUsername(String username) throws
+    // UsernameNotFoundException {
+    // User user = userRepository.findByEmail(username)
+    // .orElseThrow(() -> new UsernameNotFoundException("User not found: " +
+    // username));
+
+    // List<GrantedAuthority> authorities = toAuthorities(user.getRoles());
+    // // password not used for OTT, but set empty to satisfy contract
+    // return org.springframework.security.core.userdetails.User
+    // .withUsername(user.getEmail())
+    // .password("{noop}password")
+    // .authorities(authorities)
+    // .accountExpired(false)
+    // .accountLocked(false)
+    // .credentialsExpired(false)
+    // .disabled(false)
+    // .build();
+    // }
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        // tạo user mới nếu chưa tồn tại
+        User user = userService.createUserIfNotExists(username, "gg");
 
         List<GrantedAuthority> authorities = toAuthorities(user.getRoles());
-        // password not used for OTT, but set empty to satisfy contract
+
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
-                .password("{noop}password")
+                .password("{noop}password") // OTT không dùng password
                 .authorities(authorities)
                 .accountExpired(false)
                 .accountLocked(false)
@@ -39,7 +58,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private List<GrantedAuthority> toAuthorities(List<String> roles) {
-        // user có thể đăng nhập nhưng không có quyền gì, dễ gây lỗi khi truy cập trang yêu cầu role.
+        // user có thể đăng nhập nhưng không có quyền gì, dễ gây lỗi khi truy cập trang
+        // yêu cầu role.
         if (roles == null || roles.isEmpty()) {
             return List.of(new SimpleGrantedAuthority("ROLE_USER"));
         }

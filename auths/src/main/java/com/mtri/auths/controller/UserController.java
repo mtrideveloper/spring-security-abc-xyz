@@ -13,13 +13,14 @@ public class UserController {
 
     @GetMapping(PathConstants.PROFILE_PATH)
     public String profile(Model model, Principal principal) { // Thay đổi thành Principal
-        if (principal == null)
-            return "redirect:/login"; // Trả về HTTP 302 Redirect. Trình duyệt gửi một request mới, có thay đổi URL trên browser.
-                                    // 	Server chuyển tiếp nội bộ request đến một controller khác, không thay đổi URL trên browser.
-
-        System.out.println("From UserController");
-        System.out.println("principal: " + (principal != null ? principal.getClass().getTypeName() : "null"));
-        System.out.println("------------------------------");  
+        if (principal == null) {
+            System.out.println("From UserController");
+            System.out.println("------------------------------");
+            return "redirect:/login"; // Trả về HTTP 302 Redirect. Trình duyệt gửi một request mới, có thay đổi URL
+                                      // trên browser.
+        }
+        // Server chuyển tiếp nội bộ request đến một controller khác, không thay đổi URL
+        // trên browser.
         return "profile"; // Trả về file profile.html trong templates
     }
 }

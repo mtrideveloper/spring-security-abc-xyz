@@ -10,7 +10,6 @@ import com.mtri.auths.handler.MagicLinkGenerationSuccessHandler;
 import com.mtri.auths.handler.OAuth2AuthenticationSuccessHandler;
 import com.mtri.auths.handler.OttAuthenticationFailureHandler;
 import com.mtri.auths.handler.OttAuthenticationSuccessHandler;
-import com.mtri.auths.service.auth.oauth2.CustomOAuth2UserService;
 import com.mtri.auths.util.PathConstants;
 
 @Configuration
@@ -18,12 +17,10 @@ import com.mtri.auths.util.PathConstants;
 public class SecurityConfig {
     private final MagicLinkGenerationSuccessHandler magicLinkHandler;
     private final OttAuthenticationSuccessHandler ottSuccessHandler;
-    private final CustomOAuth2UserService oAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2SuccessHandler;
 
-    public SecurityConfig(MagicLinkGenerationSuccessHandler magicLinkHandler, OttAuthenticationSuccessHandler ottSuccessHandler, CustomOAuth2UserService oAuth2UserService, OAuth2AuthenticationSuccessHandler oAuth2SuccessHandler) {
+    public SecurityConfig(MagicLinkGenerationSuccessHandler magicLinkHandler, OttAuthenticationSuccessHandler ottSuccessHandler, OAuth2AuthenticationSuccessHandler oAuth2SuccessHandler) {
         this.magicLinkHandler = magicLinkHandler;
-        this.oAuth2UserService = oAuth2UserService;
         this.ottSuccessHandler = ottSuccessHandler;
         this.oAuth2SuccessHandler = oAuth2SuccessHandler;
     }
@@ -41,24 +38,23 @@ public class SecurityConfig {
                                 PathConstants.RECAPTCHAV2GGFORM,
                                 "/css/**", "/js/**", "/images/**")
                         .permitAll() // Cho phép truy cập không cần đăng nhập
-                        .requestMatchers("/profile").authenticated() // Yêu cầu đăng nhập cho trang profile
                         .anyRequest().authenticated() // Tất cả request khác cần đăng nhập
                 )
                 .oneTimeTokenLogin(ott -> ott
-                        .loginPage(PathConstants.OTT_LOGIN_PATH)
-                        .defaultSuccessUrl(PathConstants.PROFILE_PATH, true)
+                        // .loginPage(PathConstants.OTT_LOGIN_PATH)
+                        .loginPage(PathConstants.OTT_REQUEST_PATH)  // sao để cái path này cũng được ??
+                        // .loginProcessingUrl(PathConstants.OTT_LOGIN_PATH) // đặt đây thì nó ghi đè luôn api spring xử lý token là /login/ott
+                        // .defaultSuccessUrl(PathConstants.PROFILE_PATH, true)
                         .successHandler(ottSuccessHandler)
                         // .failureUrl(PathConstants.OTT_LOGIN_PATH + "?error=invalid_token")
                         .failureHandler(new OttAuthenticationFailureHandler())
                         .tokenGenerationSuccessHandler(magicLinkHandler))
                 // ✅ Login bằng Google OAuth2
                 .oauth2Login(oauth2 -> oauth2
-                        .loginPage(PathConstants.LOGIN_PATH)
-                        .defaultSuccessUrl(PathConstants.PROFILE_PATH, true)
+                        .loginPage("/dcm-ao-thiet-day")
+                        // .loginPage(PathConstants.LOGIN_PATH)
+                        // .defaultSuccessUrl(PathConstants.PROFILE_PATH, true)
                         .successHandler(oAuth2SuccessHandler)
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .userService(oAuth2UserService)
-                        )
                         .failureUrl(PathConstants.LOGIN_PATH + "?error"))
                 // Spring Boot (và Tomcat embedded) không lưu session vào đĩa giữa các lần chạy
                 // JSESSIONID của client (trình duyệt) vẫn còn, nhưng Server không còn biết

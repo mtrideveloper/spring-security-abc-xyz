@@ -1,5 +1,6 @@
 package com.mtri.auths.util;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.ott.OneTimeTokenAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.ui.Model;
 
 import java.security.Principal;
-import java.util.Map;
 
 @ControllerAdvice
 public class GlobalControllerAdvice {
@@ -23,36 +23,28 @@ public class GlobalControllerAdvice {
         model.addAttribute("sprOttLoginApi", PathConstants.SPR_OTT_LOGIN_API);
         model.addAttribute("sprOttGenApi", PathConstants.SPR_OTT_GEN_API);
         model.addAttribute("recaptchaV2Gg", PathConstants.RECAPTCHAV2GG);
-        
+
         if (principal != null) {
             String name = null;
             String email = null;
             String picture = null;
 
-            if (principal instanceof OAuth2AuthenticationToken) {
-                OAuth2User oauth2User = ((OAuth2AuthenticationToken) principal).getPrincipal();
-                Map<String, Object> attributes = oauth2User.getAttributes();
-
-                name = (String) attributes.get("name");
-                email = (String) attributes.get("email");
-                picture = (String) attributes.get("picture");
-            } else if (principal instanceof UserDetails) {
-                UserDetails userDetails = (UserDetails) principal;
-                name = email = userDetails.getUsername();
-            } else if (principal instanceof OneTimeTokenAuthenticationToken) {
-                OneTimeTokenAuthenticationToken ottToken = (OneTimeTokenAuthenticationToken) principal;
-                // Lấy thông tin từ OneTimeTokenAuthenticationToken
-                Object principalDetails = ottToken.getPrincipal();
-                if (principalDetails instanceof OAuth2User) {
-                    OAuth2User oauth2User = (OAuth2User) principalDetails;
-                    Map<String, Object> attributes = oauth2User.getAttributes();
-                    name = (String) attributes.get("name");
-                    email = (String) attributes.get("email");
-                    picture = (String) attributes.get("picture");
-                } else if (principalDetails instanceof UserDetails) {
-                    UserDetails userDetails = (UserDetails) principalDetails;
-                    name = email = userDetails.getUsername();
+            if (principal instanceof OAuth2AuthenticationToken oauth2Token) {
+                OAuth2User oauth2User = oauth2Token.getPrincipal();
+                var attr = oauth2User.getAttributes();
+                name = (String) attr.get("name");
+                email = (String) attr.get("email");
+                picture = (String) attr.get("picture");
+            } else if (principal instanceof UsernamePasswordAuthenticationToken upToken) {
+                Object inner = upToken.getPrincipal();
+                if (inner instanceof UserDetails userDetails) {
+                    name = userDetails.getUsername();
+                    email = userDetails.getUsername();
+                } else if (inner instanceof OneTimeTokenAuthenticationToken ottToken) {
+                    name = email = ottToken.getName();
                 }
+            } else if (principal instanceof OneTimeTokenAuthenticationToken ottToken) {
+                name = email = ottToken.getName();
             }
             // else {
             // name = email = principal.getName();
