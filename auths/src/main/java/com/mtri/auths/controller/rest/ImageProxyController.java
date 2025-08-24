@@ -1,4 +1,4 @@
-package com.mtri.auths.controller;
+package com.mtri.auths.controller.rest;
 
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;

@@ -2,15 +2,18 @@ spring:
   security:
     oauth2:
       client:
+        # provider:
+        #   google: # override các thuộc tính mặc định của Google
+        #     user-name-attribute: email # chỉ định Spring Security sẽ dùng field nào trong JSON của provider làm username
         registration:
           google:
             client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_CLIENT_SECRET}            
+            client-secret: ${GOOGLE_CLIENT_SECRET}     
             scope:
               - openid
               - email
               - profile
-  mail:
+  mail: # email của hệ thống (noreply email) dùng để gửi thư đi qua SMTP.
     host: smtp.gmail.com
     port: 587
     username: ${EMAIL}
@@ -23,3 +26,6 @@ spring:
             enable: true
   recaptcha:
     secret: ${RECAPTCHA_SECRET}
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/mtri-spring

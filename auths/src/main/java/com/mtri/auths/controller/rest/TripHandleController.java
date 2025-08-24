@@ -1,4 +1,4 @@
-package com.mtri.auths.controller;
+package com.mtri.auths.controller.rest;
 
 import org.springframework.web.bind.annotation.RestController;
 
@@ -6,28 +6,29 @@ import com.mtri.auths.dto.req.StartTripRequest;
 import com.mtri.auths.model.Trip;
 import com.mtri.auths.service.trip.TripService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/trip")
-public class TripController {
-    @Autowired
+public class TripHandleController {
     private TripService tripService;
+
+    public TripHandleController(TripService tripService) {
+        this.tripService = tripService;
+    }
 
     // ====== 1. Bắt đầu trip ======
     @PostMapping("/start")
     public Trip startTrip(
-        @RequestBody StartTripRequest startTripRequest) {
+            @RequestBody StartTripRequest startTripRequest) {
         return tripService.startTrackingService(startTripRequest.tripId, startTripRequest.enable);
     }
 
-    /*
+    /**
      * body gửi về cho server phải là:
      * {
      * "type": "Point",
@@ -45,8 +46,7 @@ public class TripController {
     // ====== 3. Dừng trip ======
     @PostMapping("/stop/{tripId}")
     public Trip stopTrip(
-            @PathVariable String tripId,
-            @RequestParam(defaultValue = "false") boolean useGoogleDirections) {
-        return tripService.stopTripService(tripId, useGoogleDirections);
+            @PathVariable String tripId) {
+        return tripService.stopTripService(tripId);
     }
 }

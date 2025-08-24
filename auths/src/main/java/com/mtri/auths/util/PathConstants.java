@@ -12,6 +12,7 @@ public class PathConstants {
     public static final String PROFILE_PATH = "/profile";
     public static final String HOME_PATH = "/";
     public static final String LOGOUT_PATH = "/logout";
+    public static final String LIST_TRIP_PATH = "/trip-list";
 
     // Spring Security APIs, controller không override các api này!
     public static final String SPR_OTT_LOGIN_API = "/login/ott";

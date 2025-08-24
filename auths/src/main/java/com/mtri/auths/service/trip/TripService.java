@@ -3,15 +3,8 @@ package com.mtri.auths.service.trip;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 
 import com.mtri.auths.model.Trip;
 import com.mtri.auths.repo.TripRepository;
@@ -19,11 +12,7 @@ import com.mtri.auths.repo.TripRepository;
 @Service
 public class TripService {
     private final TripRepository tripRepository;
-    private final RestTemplate restTemplate = new RestTemplate();
-
-    @Value("${google.api.key}")
-    private String googleApiKey;
-
+    
     private static final double EARTH_RADIUS_KM = 6371.0;
 
     public TripService(TripRepository tripRepository) {
@@ -66,7 +55,7 @@ public class TripService {
     }
 
     // ====== Tắt tracking ======
-    public Trip stopTripService(String tripId, boolean useGoogleDirections) {
+    public Trip stopTripService(String tripId) {
         Trip trip = tripRepository.findById(tripId).orElseThrow();
 
         if (!trip.isTracking())
@@ -75,13 +64,22 @@ public class TripService {
         trip.setTracking(false);
         trip.setEndTime(LocalDateTime.now());
 
-        // Nếu muốn dùng Google Directions để lấy quãng đường chính xác hơn
-        if (useGoogleDirections && trip.getPoints().size() >= 2) {
-            double googleDistance = getDistanceFromGoogle(trip.getPoints());
-            trip.setDistanceMeters(googleDistance);
-        }
+        // // Nếu muốn dùng Google Directions để lấy quãng đường chính xác hơn
+        // if (useGoogleDirections && trip.getPoints().size() >= 2) {
+        //     double googleDistance = getDistanceFromGoogle(trip.getPoints());
+        //     trip.setDistanceMeters(googleDistance);
+        // }
 
         return tripRepository.save(trip);
+    }
+
+    public Trip getTripById(String tripId)
+    {
+        return tripRepository.findByTripId(tripId);
+    }
+
+    public List<Trip> getAllTrips() {
+        return tripRepository.findAllByOrderByStartTimeDesc();
     }
 
     // ====== Tính khoảng cách Haversine ======
@@ -98,43 +96,43 @@ public class TripService {
         return EARTH_RADIUS_KM * c * 1000; // đổi km sang mét
     }
 
-    // ====== Lấy quãng đường từ Google Directions API ======
-    private double getDistanceFromGoogle(List<GeoJsonPoint> points) {
-        GeoJsonPoint start = points.get(0);
-        GeoJsonPoint end = points.get(points.size() - 1);
+    // // ====== Lấy quãng đường từ Google Directions API ======
+    // private double getDistanceFromGoogle(List<GeoJsonPoint> points) {
+    //     GeoJsonPoint start = points.get(0);
+    //     GeoJsonPoint end = points.get(points.size() - 1);
 
-        // Google yêu cầu "lat,lon"
-        String origin = start.getY() + "," + start.getX();
-        String destination = end.getY() + "," + end.getX();
+    //     // Google yêu cầu "lat,lon"
+    //     String origin = start.getY() + "," + start.getX();
+    //     String destination = end.getY() + "," + end.getX();
 
-        String url = String.format(
-                "https://maps.googleapis.com/maps/api/directions/json?origin=%s&destination=%s&key=%s",
-                origin, destination, googleApiKey);
+    //     String url = String.format(
+    //             "https://maps.googleapis.com/maps/api/directions/json?origin=%s&destination=%s&key=%s",
+    //             origin, destination, googleApiKey);
 
-        ResponseEntity<java.util.Map<String, Object>> resp = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<java.util.Map<String, Object>>() {
-                });
+    //     ResponseEntity<java.util.Map<String, Object>> resp = restTemplate.exchange(
+    //             url,
+    //             HttpMethod.GET,
+    //             null,
+    //             new ParameterizedTypeReference<java.util.Map<String, Object>>() {
+    //             });
 
-        var response = resp.getBody();
-        if (response == null)
-            return 0;
+    //     var response = resp.getBody();
+    //     if (response == null)
+    //         return 0;
 
-        Object routesObj = response.get("routes");
-        if (!(routesObj instanceof List<?> routes) || routes.isEmpty())
-            return 0;
+    //     Object routesObj = response.get("routes");
+    //     if (!(routesObj instanceof List<?> routes) || routes.isEmpty())
+    //         return 0;
 
-        Object legsObj = ((Map<?, ?>) routes.get(0)).get("legs");
-        if (!(legsObj instanceof List<?> legs) || legs.isEmpty())
-            return 0;
+    //     Object legsObj = ((Map<?, ?>) routes.get(0)).get("legs");
+    //     if (!(legsObj instanceof List<?> legs) || legs.isEmpty())
+    //         return 0;
 
-        Object distanceObj = ((Map<?, ?>) legs.get(0)).get("distance");
-        if (!(distanceObj instanceof Map<?, ?> distanceMap))
-            return 0;
+    //     Object distanceObj = ((Map<?, ?>) legs.get(0)).get("distance");
+    //     if (!(distanceObj instanceof Map<?, ?> distanceMap))
+    //         return 0;
 
-        Object value = distanceMap.get("value");
-        return (value instanceof Number num) ? num.doubleValue() : 0;
-    }
+    //     Object value = distanceMap.get("value");
+    //     return (value instanceof Number num) ? num.doubleValue() : 0;
+    // }
 }

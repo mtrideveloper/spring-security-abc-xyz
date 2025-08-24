@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
+<!-- ~ là gốc tại templates-->
+
+<head>
+    <title>Profile</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <h1 class="text-primary">Quãng đường đã di chuyển: <span class="text-success" th:text="${distanceKM}">0</span>
+        </h1>
+
+        <h1>Theo dõi chuyến đi</h1>
+
+        <button onclick="startTracking()">Bắt đầu theo dõi</button>
+        <button onclick="stopTracking()">Dừng theo dõi</button>
+
+        <script th:inline="javascript">
+            let watchId;
+            const tripId = [[`${ tripId }`]]; // Thymeleaf truyền từ backend
+
+            function startTracking() {
+                if (navigator.geolocation) {
+                    watchId = navigator.geolocation.watchPosition(
+                        (position) => {
+                            const point = {
+                                type: "Point",
+                                coordinates: [position.coords.longitude, position.coords.latitude]
+                            };
+
+                            fetch(`/trip/track/${tripId}`, {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify(point)
+                            });
+                        },
+                        (error) => console.error(error),
+                        { enableHighAccuracy: true }
+                    );
+                } else {
+                    alert("Trình duyệt không hỗ trợ GPS");
+                }
+            }
+
+            function stopTracking() {
+                if (navigator.geolocation && watchId) {
+                    navigator.geolocation.clearWatch(watchId);
+                    alert("Đã dừng theo dõi");
+                }
+            }
+        </script>
+    </div>
+</body>
+
+</html>

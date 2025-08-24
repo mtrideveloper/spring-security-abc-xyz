@@ -31,7 +31,7 @@ public class OttCaptchaProxyController {
             model.addAttribute("error", "Captcha không hợp lệ");
             System.out.println("captcha token invalid: "+captchaToken);
             
-            return "ott-login"; // Trả lại trang login
+            return PathConstants.OTT_REQUEST_PATH; // Trả lại trang login
         }
         System.out.println("captcha token: " + captchaToken);
 

@@ -23,8 +23,8 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse pt-2 pt-lg-0" id="navbarSupportedContent">
-                <div class="container d-flex justify-content-between flex-column flex-md-row gap-2 gap-md-0">
-                    <ul class="navbar-nav">
+                <div class="container d-flex justify-content-between flex-column flex-md-row gap-3 gap-md-0">
+                    <ul class="navbar-nav gap-2">
                         <a class="h-100" href="/">
                             <img th:src="@{/images/dashIcon.png}" style="max-height: 20px; height: 100%; width: auto;">
                         </a>
@@ -38,6 +38,9 @@
                                 <li><a class="dropdown-item" href="#">Vương Quốc Anh</a></li>
                             </ul>
                         </li>
+                        <a sec:authorize="isAuthenticated()" class="nav-link" th:href="@{/trip-list}" role="button">
+                            Trip list
+                        </a>
                     </ul>
                     <form class="d-flex" role="search">
                         <input class="form-control me-2" type="search" placeholder="Search players..."
@@ -55,9 +58,11 @@
                         </div>
                         <div sec:authorize="isAuthenticated()">
                             <a class="h-100" th:href="@{/profile}">
-                                <img th:if="${picture != null}" th:src="@{/proxy-image(url=${picture})}" class="img-thumbnail rounded-circle"
+                                <img th:if="${picture != null}" th:src="@{/proxy-image(url=${picture})}"
+                                    class="img-thumbnail rounded-circle"
                                     style="max-height: 40px; width: auto; aspect-ratio: 1;">
-                                <img th:if="${picture == null}" th:src="@{/images/noise.jpg}" class="img-thumbnail rounded-circle"
+                                <img th:if="${picture == null}" th:src="@{/images/noise.jpg}"
+                                    class="img-thumbnail rounded-circle"
                                     style="max-height: 40px; width: auto; aspect-ratio: 1;">
                             </a>
                         </div>
@@ -84,7 +89,7 @@
 
     <th:block layout:fragment="scripts">
         <!-- Script từ các trang con sẽ được chèn vào đây -->
-    </th:block>        
+    </th:block>
 </body>
 
 </html>
