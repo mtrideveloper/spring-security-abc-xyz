@@ -1,3 +1,4 @@
+
 User non-logged:
 	+ Trang chủ gồm: Check device status, Analysis problems from image, Part Finder By Device Name (tìm linh kiện phù hợp theo tên)
 	
