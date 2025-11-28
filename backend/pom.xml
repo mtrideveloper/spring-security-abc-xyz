@@ -10,10 +10,10 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.mtri</groupId>
-	<artifactId>devicechecker</artifactId>
+	<artifactId>noname</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>devicechecker</name>
-	<description>Device Checker backend project Spring Boot</description>
+	<name>noname</name>
+	<description>Backend Spring Boot project</description>
 	<url />
 	<licenses>
 		<license />
