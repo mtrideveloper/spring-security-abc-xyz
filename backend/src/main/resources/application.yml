@@ -29,3 +29,6 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/mtri-spring
+mux:
+  token-id: ${MUX_TOKEN_ID}
+  token-secret: ${MUX_TOKEN_SECRET}

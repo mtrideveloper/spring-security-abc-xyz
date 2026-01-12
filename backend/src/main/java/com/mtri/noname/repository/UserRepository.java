@@ -1,4 +1,4 @@
-package com.mtri.noname.repo;
+package com.mtri.noname.repository;
 
 import java.util.Optional;
 

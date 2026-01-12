@@ -27,7 +27,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
+        // Tắt CSRF để cho phép các yêu cầu POST từ React
+        http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/", "/index", "/public/**", "/unauth/**",
                                 PathConstants.LOGIN_PATH,
@@ -36,7 +37,8 @@ public class SecurityConfig {
                                 PathConstants.OTT_SENT_PATH,
                                 PathConstants.RECAPTCHAV2GG,
                                 PathConstants.RECAPTCHAV2GGFORM,
-                                "/css/**", "/js/**", "/images/**")
+                                "/css/**", "/js/**", "/images/**",
+                                "/studio/**") // temporary
                         .permitAll() // Cho phép truy cập không cần đăng nhập
                         .anyRequest().authenticated() // Tất cả request khác cần đăng nhập
                 )
