@@ -1,0 +1,7 @@
+http://localhost:8080
+    java spring mvc
+        admin dashboard
+
+https://unoccidental-emmitt-determinedly.ngrok-free.dev (http://localhost:3000)
+    nextjs (frontend) + java spring rest api
+        viewer + creator (in studio routers)

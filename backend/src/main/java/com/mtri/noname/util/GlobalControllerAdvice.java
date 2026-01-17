@@ -51,7 +51,8 @@ public class GlobalControllerAdvice {
             // }
 
             System.out.println("From GlobalControllerAdvice");
-            System.out.println("principal: " + principal.getClass().getTypeName());
+            System.out.println("principal type: " + principal.getClass().getTypeName());
+            System.out.println("getName(): " + principal.getName());
             System.out.println("name: " + name);
             System.out.println("email: " + email);
             System.out.println("pic: " + picture);

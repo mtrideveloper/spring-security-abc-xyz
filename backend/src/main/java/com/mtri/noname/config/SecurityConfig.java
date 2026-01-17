@@ -38,18 +38,21 @@ public class SecurityConfig {
                                 PathConstants.RECAPTCHAV2GG,
                                 PathConstants.RECAPTCHAV2GGFORM,
                                 "/css/**", "/js/**", "/images/**",
-                                "/studio/**") // temporary
+                                //#region Temporary
+                                "/studio/**")
+                                //#endregion
                         .permitAll() // Cho phép truy cập không cần đăng nhập
                         .anyRequest().authenticated() // Tất cả request khác cần đăng nhập
                 )
                 .oneTimeTokenLogin(ott -> ott
                         // .loginPage(PathConstants.OTT_LOGIN_PATH)
-                        .loginPage(PathConstants.OTT_REQUEST_PATH)  // sao để cái path này cũng được ??
+                        .loginPage(String.format(
+                                "https://unoccidental-emmitt-determinedly.ngrok-free.dev/login/%s", 
+                                PathConstants.OTT_REQUEST_PATH)
+                        )  // sao để cái path này cũng được ??
                         // .loginProcessingUrl(PathConstants.OTT_LOGIN_PATH) // đặt đây thì nó ghi đè luôn api spring xử lý token là /login/ott
-                        // .defaultSuccessUrl(PathConstants.PROFILE_PATH, true)
-                        .successHandler(ottSuccessHandler)
-                        // .failureUrl(PathConstants.OTT_LOGIN_PATH + "?error=invalid_token")
                         .failureHandler(new OttAuthenticationFailureHandler())
+                        .successHandler(ottSuccessHandler)
                         .tokenGenerationSuccessHandler(magicLinkHandler))
                 // ✅ Login bằng Google OAuth2
                 .oauth2Login(oauth2 -> oauth2

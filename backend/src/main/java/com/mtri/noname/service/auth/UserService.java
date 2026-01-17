@@ -27,6 +27,10 @@ public class UserService {
                 });
     }
 
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
+
     private String extractNameFromEmail(String email) {
         int atIndex = email.indexOf('@');
         return (atIndex > 0) ? email.substring(0, atIndex) : email;

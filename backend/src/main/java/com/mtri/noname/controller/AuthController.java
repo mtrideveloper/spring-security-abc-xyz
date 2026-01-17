@@ -62,7 +62,7 @@ public class AuthController {
         if ("invalid_token".equals(error)) {
             CheckErrorWithSessionFlag(model, session);
         }
-        System.out.println("Error: " + model.getAttribute("error"));
+        System.out.println("Check error (showOttRequestPage controller): " + model.getAttribute("error"));
 
         if (SecurityChecker.isValidPrincipal(principal)) {
             return "redirect:" + PathConstants.PROFILE_PATH;

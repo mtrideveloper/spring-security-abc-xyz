@@ -39,12 +39,16 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         System.out.println("Name: " + name);
         System.out.println("Provider ID: " + providerId);
 
-        // TODO: Lưu thông tin user vào database nếu chưa tồn tại
         userService.createUserIfNotExists(email, "gg");
 
-        // TODO: Tạo JWT token nếu cần
         // String jwtToken = jwtService.generateToken(email);
         // response.addHeader("Authorization", "Bearer " + jwtToken);
+
+        // // Giả sử bạn có hàm tạo JWT
+        // String token = "eyJhbGciOiJIUzI1NiIsIn..."; 
+        // // 3. Ghi phản hồi JSON
+        // response.getWriter().write("{\"token\": \"" + token + "\", \"message\": \"Login Success\"}");
+        // // Lưu ý: Không gọi response.sendRedirect() ở đây nếu làm API
 
         // Redirect về trang profile
         response.sendRedirect(PathConstants.PROFILE_PATH);
